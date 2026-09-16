@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /settings
+Disallow: /notifications
+Disallow: /shelf
+Disallow: /publish
+Disallow: /search
+Disallow: /onboarding
+Disallow: /read/
+
+Sitemap: https://bookverse.app/sitemap.xml

@@ -1,0 +1,34 @@
+# Production-shaped stack: Postgres + API + Nginx serving the built frontend.
+# Copy backend/.env.example to backend/.env, set SECRET_KEY and your domain, then: docker compose up -d --build
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bookverse
+      POSTGRES_PASSWORD: bookverse
+      POSTGRES_DB: bookverse
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U bookverse"], interval: 5s, retries: 10 }
+
+  backend:
+    build: ./backend
+    env_file: backend/.env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://bookverse:bookverse@db:5432/bookverse
+    volumes: ["uploads:/app/uploads"]
+    depends_on: { db: { condition: service_healthy } }
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_SITE_URL: ${VITE_SITE_URL:-http://localhost}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+    ports: ["80:80"]
+    depends_on: [backend]
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  uploads:

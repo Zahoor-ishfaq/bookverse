@@ -1,0 +1,17 @@
+!backend/uploads/.gitkeep
+*.pyc
+.env
+.venv/
+__pycache__/
+backend/*.db*
+backend/.venv/
+backend/uploads/*
+dist/
+frontend/dist/
+node_modules/
+
+# local-only notes
+DEPLOY-AWS.md
+*.tsbuildinfo
+shots/
+*.log
